@@ -93,11 +93,6 @@ class Calculator {
           computation = (prev / current).toFixed(cLength+pLength);
         }
         break
-      case "√" :
-        computation = Math.sqrt(prev);
-        
-        if(isNaN(computation)) return alert('error');
-        break
       case 'Xn':
         computation = Math.pow(prev, current)
         break
@@ -105,6 +100,8 @@ class Calculator {
         return;
     }
     this.readyToReset = true;
+
+    
 
     let stringComputation= String(computation);
     if(stringComputation.includes('.') && stringComputation.endsWith('0')){
@@ -114,6 +111,17 @@ class Calculator {
     this.operation = undefined;
     this.previousOperand = '';
   }
+ 
+  sqrtNumber() {
+    if (parseFloat(this.currentOperand) < 0 && !isNaN(parseFloat(this.currentOperand))) {
+        this.currentOperand = null;
+    } else {
+        this.currentOperand = this.currentOperand ** (0.5)
+        this.compute();
+        this.readyToReset = true;
+    }
+}
+
 
   getDisplayNumber(number) {
     const stringNumber = number.toString()
@@ -153,6 +161,7 @@ const allClearButton = document.querySelector('[data-all-clear]');
 const previousOperandTextElement = document.querySelector('[data-previous-operand]');
 const currentOperandTextElement = document.querySelector('[data-current-operand]');
 const numberButtonOperand = document.querySelector('[data-number-operand]');
+const sqrtButton = document.querySelector('[data-sqrt]');
 
 const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement)
 
@@ -172,6 +181,11 @@ numberButtons.forEach(button => {
 
 numberButtonOperand.addEventListener('click', button => {
   calculator.numberSing()
+  calculator.updateDisplay();
+})
+
+sqrtButton.addEventListener('click', button => {
+  calculator.sqrtNumber();
   calculator.updateDisplay();
 })
 
@@ -196,3 +210,4 @@ deleteButton.addEventListener('click', button => {
   calculator.delete();
   calculator.updateDisplay();
 })
+
